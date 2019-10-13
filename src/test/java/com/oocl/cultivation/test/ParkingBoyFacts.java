@@ -1,9 +1,6 @@
 package com.oocl.cultivation.test;
 
-import com.oocl.cultivation.Car;
-import com.oocl.cultivation.ParkingBoy;
-import com.oocl.cultivation.ParkingLot;
-import com.oocl.cultivation.ParkingTicket;
+import com.oocl.cultivation.*;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Array;
@@ -126,5 +123,19 @@ class ParkingBoyFacts {
         ParkingTicket excessCar = parkingBoy.park(new Car());
 
         assertEquals(parkingBoy.getParkingLot2().getCars().size() , 1);
+    }
+
+    @Test
+    void should_super_smart_parking_boy_park_to_parking_lot_with_larger_capacity(){
+
+        ParkingLot parkingLot = new ParkingLot();
+        SuperSmartParkingBoy parkingBoy = new SuperSmartParkingBoy(parkingLot);
+
+        IntStream.rangeClosed(0 , 9).forEach( a ->
+                parkingBoy.park(new Car())
+        );
+
+        assertEquals(parkingBoy.getParkingLot().getCars().size() , 5);
+        assertEquals(parkingBoy.getParkingLot2().getCars().size() , 5);
     }
 }
