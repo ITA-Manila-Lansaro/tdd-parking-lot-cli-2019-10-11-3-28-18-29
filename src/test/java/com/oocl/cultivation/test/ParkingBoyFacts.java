@@ -22,7 +22,7 @@ class ParkingBoyFacts {
 
         ParkingTicket parkingTicket = parkingBoy.park(car);
 
-        assertNotNull(parkingLot.getCars(parkingTicket));
+        assertNotNull(parkingLot.getCars());
     }
 
     @Test
@@ -111,5 +111,20 @@ class ParkingBoyFacts {
         ParkingTicket excessCar = parkingBoy.park(new Car());
 
         assertEquals(parkingBoy.getLastErrorMessage(), "Not enough position.");
+    }
+
+    @Test
+    void should_park_into_second_parking_lot_when_first_parking_lot_is_full(){
+
+        ParkingLot parkingLot = new ParkingLot();
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLot);
+
+        IntStream.rangeClosed(0,10).forEach( a ->
+                parkingBoy.park(new Car())
+        );
+
+        ParkingTicket excessCar = parkingBoy.park(new Car());
+
+        assertEquals(parkingBoy.getParkingLot2().getCars().size() , 1);
     }
 }

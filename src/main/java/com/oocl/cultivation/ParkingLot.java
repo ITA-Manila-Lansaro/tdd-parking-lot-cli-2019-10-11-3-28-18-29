@@ -6,7 +6,7 @@ import java.util.Map;
 public class ParkingLot {
     private final int capacity;
 
-    public Map<ParkingTicket, Car> getCars(ParkingTicket ticket) {
+    public Map<ParkingTicket, Car> getCars() {
         return cars;
     }
 
