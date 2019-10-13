@@ -76,4 +76,40 @@ class ParkingBoyFacts {
 
         assertNull(excessCar);
     }
+
+    @Test
+    void should_return_error_message_when_customer_gives_wrong_ticket(){
+        Car car = new Car();
+        ParkingLot parkingLot = new ParkingLot();
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLot);
+
+        parkingBoy.fetch(new ParkingTicket(car));
+
+        assertEquals(parkingBoy.getLastErrorMessage(), "Unrecognized parking ticket.");
+    }
+
+    @Test
+    void should_return_error_message_when_customer_gives_no_ticket(){
+        ParkingLot parkingLot = new ParkingLot();
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLot);
+
+        parkingBoy.fetch();
+
+        assertEquals(parkingBoy.getLastErrorMessage(), "Please Provide your Parking ticket");
+    }
+
+    @Test
+    void should_return_error_message_if_the_park_is_full(){
+
+        ParkingLot parkingLot = new ParkingLot();
+        ParkingBoy parkingBoy = new ParkingBoy(parkingLot);
+
+        IntStream.rangeClosed(0,10).forEach( a ->
+                parkingBoy.park(new Car())
+        );
+
+        ParkingTicket excessCar = parkingBoy.park(new Car());
+
+        assertEquals(parkingBoy.getLastErrorMessage(), "Not enough position.");
+    }
 }

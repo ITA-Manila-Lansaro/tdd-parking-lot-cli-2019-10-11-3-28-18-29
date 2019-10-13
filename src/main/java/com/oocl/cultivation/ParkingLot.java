@@ -17,7 +17,7 @@ public class ParkingLot {
     }
 
     public ParkingTicket parkCar(Car car) {
-        if(cars.size() < capacity){
+        if(getAvailableParkingPosition() < 0){
             ParkingTicket parkingTicket = new ParkingTicket(car);
             this.cars.put(parkingTicket,car);
             return parkingTicket;
