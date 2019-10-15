@@ -1,61 +1,38 @@
 package com.oocl.cultivation;
 
-public class SuperSmartParkingBoy {
-    private final ParkingLot parkingLot;
-    private ParkingLot parkingLot2;
-    private String lastErrorMessage;
-    private Car car;
+import java.util.List;
 
-    public ParkingLot getParkingLot2() {
-        return parkingLot2;
+public class SuperSmartParkingBoy extends ParkingBoy{
+
+    public SuperSmartParkingBoy(List<ParkingLot> parkingLot) {
+        super(parkingLot);
     }
 
-    public ParkingLot getParkingLot(){
-        return parkingLot;
-    }
 
-    public void setLastErrorMessage(String lastErrorMessage) {
-        this.lastErrorMessage = lastErrorMessage;
-    }
-
-    public SuperSmartParkingBoy(ParkingLot parkingLot) {
-        this.parkingLot = parkingLot;
-    }
-
+    @Override
     public ParkingTicket park(Car car) {
         ParkingTicket parkingTicket;
 
-        if (parkingLot2 == null){
-            ParkingLot parkingLot = new ParkingLot();
-            this.parkingLot2 = parkingLot;
-        }
-        if(parkingLot.getAvailableParkingPosition() > parkingLot2.getAvailableParkingPosition()) {
-            parkingTicket = parkingLot2.parkCar(car);
-        }else
-        {
-            parkingTicket = parkingLot.parkCar(car);
-        }
+        parkingTicket = parkingLotList.stream()
+                .reduce((a,b) ->  a.getAvailableParkingPosition() > b.getAvailableParkingPosition() ? b: a)
+                .map(a -> a.parkCar(car))
+                .orElse(null);
 
         return parkingTicket;
-
-    }
-    
-    public Car fetch(ParkingTicket ticket) {
-
-        Car fetchedCar = parkingLot.getCar(ticket);
-
-        if (fetchedCar==null){
-            setLastErrorMessage("Unrecognized parking ticket.");
-            return null;
-        }
-        return fetchedCar;
     }
 
-    public void fetch(){
-        setLastErrorMessage("Please Provide your Parking ticket");
-    }
-
-    public String getLastErrorMessage() {
-        return lastErrorMessage;
-    }
+//    private ParkingTicket distributeCarToParkingLots(Car car) {
+//        ParkingTicket parkingTicket = new ParkingTicket();
+//
+////        if (parkingLot2 == null){
+////            return getParkingLot().parkCar(car);
+////        }
+////
+////        if(parkingLot.getAvailableParkingPosition() < parkingLot2.getAvailableParkingPosition()) {
+////            parkingTicket = parkingLot.parkCar(car);
+////        }else {
+////            parkingTicket = parkingLot2.parkCar(car);
+////        }
+//        return parkingTicket;
+//    }
 }

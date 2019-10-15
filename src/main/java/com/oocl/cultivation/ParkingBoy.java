@@ -1,58 +1,61 @@
 package com.oocl.cultivation;
 
-import java.util.Map;
+import java.util.List;
+import java.util.Objects;
 
 public class ParkingBoy {
 
-    private final ParkingLot parkingLot;
-    private ParkingLot parkingLot2;
-    private String lastErrorMessage;
-    private Car car;
+    public static final String NOT_ENOUGH_POSITION_ERR_MSG = "Not enough position.";
+    public static final String NO_TICKET_ERR_MSG = "Please Provide your Parking ticket";
+    public static final String UNRECOGNIZED_TICKET_ERR_MSG = "Unrecognized parking ticket.";
+    public List<ParkingLot> parkingLotList;
 
-    public ParkingLot getParkingLot2() {
-        return parkingLot2;
+    public List<ParkingLot> getParkingLot() {
+        return parkingLotList;
     }
+    private String lastErrorMessage;
 
     public void setLastErrorMessage(String lastErrorMessage) {
         this.lastErrorMessage = lastErrorMessage;
     }
 
-
-
-    public ParkingBoy(ParkingLot parkingLot) {
-        this.parkingLot = parkingLot;
+    public ParkingBoy(List<ParkingLot> parkingLot) {
+        this.parkingLotList = parkingLot;
     }
 
     public ParkingTicket park(Car car) {
-        ParkingTicket parkingTicket = parkingLot.parkCar(car);
 
-        if(parkingTicket == null){
-            setLastErrorMessage("Not enough position.");
-            parkToAnotherParkingLot(car);
+        ParkingLot parkingLot =  parkingLotList.stream()
+                .filter(a -> a.getAvailableParkingPosition() < 0)
+                .findFirst()
+                .orElse(null);
+        if(parkingLot != null)
+        {
+            return parkingLot.parkCar(car);
         }
-        return parkingTicket;
+        setLastErrorMessage(NOT_ENOUGH_POSITION_ERR_MSG);
+
+        return null;
 
     }
 
-    public ParkingTicket parkToAnotherParkingLot(Car car){
-        ParkingLot parkingLot = new ParkingLot();
-        this.parkingLot2 = parkingLot;
-
-        return parkingLot2.parkCar(car);
-    }
     public Car fetch(ParkingTicket ticket) {
+        Car fetchedCar;
 
-        Car fetchedCar = parkingLot.getCar(ticket);
+        fetchedCar = parkingLotList.stream()
+                .map(a -> a.getCar(ticket))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
 
-        if (fetchedCar==null){
-            setLastErrorMessage("Unrecognized parking ticket.");
-            return null;
+        if(fetchedCar == null){
+            setLastErrorMessage(UNRECOGNIZED_TICKET_ERR_MSG);
         }
         return fetchedCar;
     }
 
     public void fetch(){
-        setLastErrorMessage("Please Provide your Parking ticket");
+        setLastErrorMessage(NO_TICKET_ERR_MSG);
     }
 
     public String getLastErrorMessage() {
